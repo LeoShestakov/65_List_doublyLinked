@@ -23,8 +23,7 @@ public class Node {
     }
 	
 	public Node( Object cargo, Node nextNode, Node prevNode) {
-        this( cargo);
-        this.nextNode = nextNode;
+        this( cargo, nextNode);
 		this.prevNode = prevNode;
     }
 
@@ -70,9 +69,9 @@ public class Node {
 		return prevNode;
 	}
 	
-	public Node setPrevNode(Node prevNode){
-		Node returned = this.prevNode;
+	public Node setPrevNode(Node previous){
+		Node saveForReturn = this.prevNode;
 		this.prevNode = prevNode;
-		return returned;
+		return saveForReturn;
 }
 }

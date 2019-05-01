@@ -4,7 +4,6 @@
 
 public class List_inChainOfNodes{
     private Node headSentinel;
-	private Node tailSentinel;
 
      
     /**
@@ -12,8 +11,9 @@ public class List_inChainOfNodes{
      */
     public List_inChainOfNodes() {
         headSentinel = new Node( null, null);
-		tailSentinel = new Node( null, null);
-		headSentinel.setNextNode(tailSentinel);
+		headSentinel.setPrevNode(headSentinel);
+		headSentinel.setNextNode(headSentinel);
+		
     }
 
     /**
@@ -31,37 +31,40 @@ public class List_inChainOfNodes{
         else return 1+ size( next);
     }
 
+	/**
+      Demo use of links to previous Nodes.
 
-     /**
-       @return a string representation of this list,
-       format:
-           # elements [element0,element1,element2,]
-      */
+      @return a string representation of this list,
+              iterating through the list
+              from tail to head.
+      format, using ` as separator
+          [element0`element1`element2`]
+     */
     public String toString() {
-        String stringRep = size() + " elements [";
+        String stringRep = "tail-first [";
 
-        for( Node node = headSentinel.getNextNode()
-           ; node != null
-           ; node = node.getNextNode() )
-            stringRep += node.getCargo() + ",";
+        for (Node node = headSentinel.getPrevNode()
+			; node != headSentinel
+			; node = node.getPrevNode())
+            stringRep += node.getCargo() + "`";
         return stringRep + "]";
     }
-
-
+	
     /**
       Append @value to the head of this list.
 
       @return true, in keeping with conventions yet to be discussed
      */
-     public boolean addAsHead( Object val) {
-        headSentinel.setNextNode(
-          new Node( val, headSentinel.getNextNode()));
-        return true;
-     }
+    public boolean addAsHead( Object val) {
+		Node newNode = new Node( val);
+        headSentinel.setNextNode(newNode);
+		newNode.setPrevNode(headSentinel);
+		return true;
+    }
 
 
     /**
-      @return a reference to the node before
+      @return a reference to the node prev
               the node at @index
      */
     private Node getNodeBefore( int index) {
@@ -118,12 +121,12 @@ public class List_inChainOfNodes{
       (that is, increase the index associated with each).
      */
     public boolean add( int index, Object value) {
-        Node newNode = new Node( value);
-        Node afterNew = /* the node that should follow newNode
-          in the augmented list */
-          getNodeBefore( index).setNextNode( newNode);
-        newNode.setNextNode( afterNew);
-        return true;
+        Node newNode = new Node(value);
+		newNode.setPrevNode(getNodeBefore(index));
+        Node afterNew = getNodeBefore(index).setNextNode(newNode);
+		newNode.setNextNode(afterNew);
+		afterNew.setPrevNode(newNode);
+		return true;
     }
 
 
@@ -136,10 +139,11 @@ public class List_inChainOfNodes{
       @return the value that was removed from the list
      */
     public Object remove( int index) {
-        Node before = getNodeBefore( index);
+        Node before = getNodeBefore(index);
         Node ax = before.getNextNode();
         Object saveForReturn = ax.getCargo();
-        before.setNextNode( ax.getNextNode());
-        return saveForReturn;
+		before.setNextNode(ax.getNextNode());
+		ax.getNextNode().setPrevNode(before);
+		return saveForReturn;
     }
 }
