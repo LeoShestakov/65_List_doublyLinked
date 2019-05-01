@@ -57,6 +57,8 @@ public class List_inChainOfNodes{
      */
     public boolean addAsHead( Object val) {
 		Node newNode = new Node( val);
+		newNode.setNextNode(headSentinel.getNextNode());
+		headSentinel.getNextNode().setPrevNode(newNode);
         headSentinel.setNextNode(newNode);
 		newNode.setPrevNode(headSentinel);
 		return true;
